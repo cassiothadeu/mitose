@@ -89,6 +89,18 @@ func WatchConfigMap(namespace string) (<-chan error, error) {
 	return c, nil
 }
 
+func UpdateConfigMap(namespace string, configmap map[string]string) error {
+	kc, err := BuildClient()
+	if err != nil {
+		return err
+	}
+	_, err = kc.ConfigMaps(namespace).Update(&k8sv1.ConfigMap{
+		ObjectMeta: k8sv1.ObjectMeta{Name: "config"},
+		Data:       configmap,
+	})
+	return err
+}
+
 func GetCurrentNamespace() (string, error) {
 	ns, err := ioutil.ReadFile(namespaceSecret)
 	return string(ns), err
